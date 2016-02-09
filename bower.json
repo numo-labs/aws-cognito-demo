@@ -1,0 +1,6 @@
+{
+  "name": "aws-cognito-demo",
+  "dependencies": {
+    "amazon-cognito-js": "https://github.com/tingletech/amazon-cognito-js.git#patch-1"
+  }
+}
