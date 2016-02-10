@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Promise from 'bluebird';
 import hello from 'hellojs';
 
 let cognito = {
@@ -36,10 +35,10 @@ export default class App extends React.Component {
     }
 
     // Listen auth.login event, fires when logged
-    hello.on('auth.login', this.authCb.bind(this));
+    hello.on('auth.login', this.getUserInfo.bind(this));
   }
 
-  authCb (auth) {
+  getUserInfo (auth) {
     this.setState({
       spinner: true
     });
@@ -67,29 +66,22 @@ export default class App extends React.Component {
     });
 
     // get AWS credentials, so we can connect
-    Promise.promisifyAll(AWS.config.credentials);
-    AWS.config.credentials.getAsync().then(resolve => {
-
+    AWS.config.credentials.get(() => {
       // connect to cognito
       cognito.client = new AWS.CognitoSyncManager();
-      Promise.promisifyAll(cognito.client);
 
-      // return cognito.client with data storage -> DataSet
-      return cognito.client.openOrCreateDatasetAsync('DataSet');
-    })
-    .then(dataset => {
-      cognito.dataSet = dataset;
-      Promise.promisifyAll(dataset);
+      // open or create new dataset
+      cognito.client.openOrCreateDataset('DataSet', (err, dataset) => {
+        cognito.dataSet = dataset;
 
-      // get user data from cognito storage
-      const content = cognito.dataSet.getAsync('DataKey').value();
-      return content;
-    })
-    .then(content => {
-      // set user data from cognito storage
-      this.setState({
-        spinner: false,
-        text: content ? content : 'Type something...'
+        // get data from Cloud by the key
+        dataset.get('DataKey', (err, content) => {
+          this.setState({
+            spinner: false,
+            text: content ? content : 'Type something...'
+          });
+        });
+
       });
     });
   }
@@ -117,10 +109,10 @@ export default class App extends React.Component {
   }
 
   changeInputData (e) {
-    // save data to the cognito storage by key = DataKey
-    cognito.dataSet.putAsync('DataKey', e.target.value).then(response => {
+    // save data to the cognito storage by the key
+    cognito.dataSet.put('DataKey', e.target.value, (err, record) => {
       this.setState({
-        text: response.value
+        text: record.value
       });
     });
   }
