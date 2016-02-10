@@ -12,9 +12,11 @@ $ bower install
 $ npm start
 ```
 
+## What's inside
+
 **Initialize hello.js with Google ID**
 
-`Hello.js` — it is client-side library that simplify authenticating.
+`Hello.js` — it is a client-side library that simplify authenticating.
 
 ```js
   hello.init({
