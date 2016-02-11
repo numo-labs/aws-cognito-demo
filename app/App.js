@@ -18,7 +18,6 @@ export default class App extends React.Component {
   }
 
   componentDidMount () {
-
     // Initialize hello.js with Google ID
     hello.init({
       google: '1007282893537-d12afmkgp97mjfa1plp7g4caginmkam9.apps.googleusercontent.com'
@@ -33,7 +32,7 @@ export default class App extends React.Component {
         spinner: true
       });
     }
-
+    
     // Listen auth.login event, fires when logged
     hello.on('auth.login', this.getUserInfo.bind(this));
   }
@@ -76,10 +75,14 @@ export default class App extends React.Component {
 
         // get data from Cloud by the key
         dataset.get('DataKey', (err, content) => {
-          this.setState({
-            spinner: false,
-            text: content ? content : 'Type something...'
-          });
+          dataset.synchronize({
+            onSuccess: (dataset, newRecord) => {
+              this.setState({
+                spinner: false,
+                text: content ? content : 'Type something...'
+              });
+            }
+          })
         });
 
       });
@@ -110,10 +113,16 @@ export default class App extends React.Component {
 
   changeInputData (e) {
     // save data to the cognito storage by the key
-    cognito.dataSet.put('DataKey', e.target.value, (err, record) => {
-      this.setState({
-        text: record.value
-      });
+    this.setState({
+      text: e.target.value
+    });
+  }
+
+  cognitoSetDate (e) {
+    const value = this.state.text;
+
+    cognito.dataSet.put('DataKey', value, (err, record) => {
+      cognito.dataSet.synchronize();
     });
   }
 
@@ -134,11 +143,7 @@ export default class App extends React.Component {
 
     if (spinner) return <div>Loading...</div>;
 
-    if (!logged) {
-      return this.renderNotLogged();
-    } else {
-      return this.renderUserInfo(userInfo);
-    }
+    return logged ? this.renderUserInfo(userInfo) : this.renderNotLogged();
   }
 
   renderNotLogged () {
@@ -158,6 +163,7 @@ export default class App extends React.Component {
         </div>
         <div>
           <input value={this.state.text} onChange={this.changeInputData.bind(this)} />
+          <button onClick={this.cognitoSetDate.bind(this)}>Save to Cognito Cloud</button>
         </div>
       </div>
     );
