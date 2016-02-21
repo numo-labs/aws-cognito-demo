@@ -6,11 +6,18 @@ Amazon Cognito is a service that makes it easy to save user data in the AWS Clou
 
 ## Run locally
 
+### Install the dependencies and start the webpack server
+
+```sh
+$ npm run init
 ```
-$ npm install
-$ bower install
-$ npm start
-```
+
+Then open in the browser: http://localhost:3000/
+
+You should expect to see a button:
+
+
+
 
 ## What's inside
 
