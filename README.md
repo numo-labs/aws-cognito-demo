@@ -14,8 +14,18 @@ $ npm run init
 
 Then open in the browser: http://localhost:3000/
 
-You should expect to see a button:
+You should expect to see a "*Sign-in with Google*" button:
 
+![cognito-google-login](https://cloud.githubusercontent.com/assets/194400/13205340/02ad7c8a-d8de-11e5-9eae-7d9c73687318.png)
+
+Authorize the app
+
+![cognito-google-login-auth](https://cloud.githubusercontent.com/assets/194400/13205440/03d079ee-d8e0-11e5-9460-9b238621abf5.png)
+
+Once authorized you should be re-directed back to the original page
+where you should see your Google profile:
+
+![cognito-google-authorised](https://cloud.githubusercontent.com/assets/194400/13205447/4ba7017a-d8e0-11e5-9409-4b05197ddc8e.png)
 
 
 
